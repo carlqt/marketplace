@@ -1,6 +1,6 @@
 class Practice::BaseController < ApplicationController
 
-  before_action :load_practice
+  # before_action :load_practice
 
   private
 

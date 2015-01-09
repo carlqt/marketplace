@@ -1,7 +1,7 @@
 class Practice::EnquiriesController < Practice::BaseController
 
   def index
-    @enquiries = @practice.enquiries
+    # @enquiries = @practice.enquiries
   end
 
   def show
