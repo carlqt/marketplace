@@ -1,0 +1,2 @@
+module Practice::EnquiriesHelper
+end
