@@ -26,7 +26,7 @@ RSpec.describe Practice::EnquiriesController do
   describe "#show" do
     it "renders the show view" do
       @doctor_sign_in.call
-      doctor = Enquiry.create!
+      Doctor.should_receive(:new).with(id: 1)
       get :show, {id: 1}
       expect(response).to render_template(:show)
     end
@@ -37,7 +37,7 @@ RSpec.describe Practice::EnquiriesController do
   describe "#confirm" do
     it "redirects to enquiry if confirmed" do
       @doctor_sign_in.call
-      Enquiry.create
+      Doctor.should_receive(:new).with(id: 1)
       put :confirm, id: 1, enquiry: { status: "confirm" }
       expect(response).to redirect_to(practice_enquiries_path(1))
     end
@@ -46,7 +46,7 @@ RSpec.describe Practice::EnquiriesController do
   describe "#reject" do
     it "redirects to enquiry if confirmed" do
       @doctor_sign_in.call
-      Enquiry.create
+      Doctor.should_receive(:new).with(id: 1)
       put :reject, id: 1, enquiry: { status: "reject" }
       expect(response).to redirect_to(practice_enquiries_path(1))
     end
