@@ -1,7 +1,5 @@
 class Doctor < ActiveRecord::Base
-  has_many :enquiry
+  has_many :enquiry, as: :enquirible
+  belongs_to :user
 
-  def is_a_doctor?
-    true
-  end
 end
