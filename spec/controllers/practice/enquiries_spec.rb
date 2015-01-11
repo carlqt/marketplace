@@ -29,33 +29,37 @@ RSpec.describe Practice::EnquiriesController do
     it_behaves_like 'other actions', 'index'
   end
 
-  # describe "#show" do
-  #   it "renders the show view" do
-  #     @doctor_sign_in.call
-  #     doctor = Enquiry.create!
-  #     get :show, {id: 1}
-  #     expect(response).to render_template(:show)
-  #   end
+  describe "#show" do
+    it "renders the show view" do
+      @doctor_sign_in.call
+      enquiry = Enquiry.stub(:new)
+      get :show, {id: 1}
+      expect(response).to render_template(:show)
+    end
 
-  #   it_behaves_like 'other actions', 'show', id: 1
-  # end
+    it_behaves_like 'other actions', 'show', id: 1
+  end
 
-  # describe "#confirm" do
-  #   it "redirects to enquiry if confirmed" do
-  #     @doctor_sign_in.call
-  #     Enquiry.create
-  #     put :confirm, id: 1, enquiry: { status: "confirm" }
-  #     expect(response).to redirect_to(practice_enquiries_path(1))
-  #   end
-  # end
+  describe "#confirm" do
+    it "redirects to enquiry if confirmed" do
+      @doctor_sign_in.call
+      enquiry = double('enquiry')
+      controller.stub_chain(:current_user, :enquiries, :find_by).and_return(enquiry)
+      allow(enquiry).to receive(:update_attributes).with(status: "confirm").and_return(true)
+      put :confirm, id: 1, enquiry: { status: "confirm" }
+      expect(response).to redirect_to(practice_enquiry_path(enquiry))
+    end
+  end
 
-  # describe "#reject" do
-  #   it "redirects to enquiry if confirmed" do
-  #     @doctor_sign_in.call
-  #     Enquiry.create
-  #     put :reject, id: 1, enquiry: { status: "reject" }
-  #     expect(response).to redirect_to(practice_enquiries_path(1))
-  #   end
-  # end
+  describe "#reject" do
+    it "redirects to enquiry if confirmed" do
+      @doctor_sign_in.call
+      enquiry = double('enquiry')
+      controller.stub_chain(:current_user, :enquiries, :find_by).and_return(enquiry)
+      allow(enquiry).to receive(:update_attributes).with(status: "reject").and_return(true)
+      put :reject, id: 1, enquiry: { status: "reject" }
+      expect(response).to redirect_to(practice_enquiries_path)
+    end
+  end
 
 end
