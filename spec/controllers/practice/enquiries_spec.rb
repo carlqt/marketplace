@@ -7,7 +7,10 @@ RSpec.describe Practice::EnquiriesController do
 
   shared_examples_for 'other actions' do |action, params|
     it 'redirects to the home page when user is not a doctor' do
-      controller.instance_variable_set(:@practice, "nil")
+      user = double('user')
+      allow(user).to receive(:is_a_doctor?).and_return(false)
+      controller.stub(:current_user).and_return(user)
+
       get :"#{action}", params
       expect(response).to redirect_to(root_path)
     end
@@ -16,6 +19,9 @@ RSpec.describe Practice::EnquiriesController do
   describe "#index" do
     it "renders the index view" do
       @doctor_sign_in.call
+      user = double('user')
+      allow(user).to receive(:enquiries).and_return([])
+      controller.instance_variable_set(:@practice, user)
       get :index
       expect(response).to render_template :index
     end
@@ -26,7 +32,7 @@ RSpec.describe Practice::EnquiriesController do
   describe "#show" do
     it "renders the show view" do
       @doctor_sign_in.call
-      Doctor.should_receive(:new).with(id: 1)
+      enquiry = Enquiry.stub(:new)
       get :show, {id: 1}
       expect(response).to render_template(:show)
     end
@@ -37,18 +43,22 @@ RSpec.describe Practice::EnquiriesController do
   describe "#confirm" do
     it "redirects to enquiry if confirmed" do
       @doctor_sign_in.call
-      Doctor.should_receive(:new).with(id: 1)
+      enquiry = double('enquiry')
+      controller.stub_chain(:current_user, :enquiries, :find_by).and_return(enquiry)
+      allow(enquiry).to receive(:update_attributes).with(status: "confirm").and_return(true)
       put :confirm, id: 1, enquiry: { status: "confirm" }
-      expect(response).to redirect_to(practice_enquiries_path(1))
+      expect(response).to redirect_to(practice_enquiry_path(enquiry))
     end
   end
 
   describe "#reject" do
     it "redirects to enquiry if confirmed" do
       @doctor_sign_in.call
-      Doctor.should_receive(:new).with(id: 1)
+      enquiry = double('enquiry')
+      controller.stub_chain(:current_user, :enquiries, :find_by).and_return(enquiry)
+      allow(enquiry).to receive(:update_attributes).with(status: "reject").and_return(true)
       put :reject, id: 1, enquiry: { status: "reject" }
-      expect(response).to redirect_to(practice_enquiries_path(1))
+      expect(response).to redirect_to(practice_enquiries_path)
     end
   end
 
