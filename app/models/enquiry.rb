@@ -1,3 +1,3 @@
 class Enquiry < ActiveRecord::Base
-  belongs_to :doctor
+  belongs_to :enquirible, polymorphic: true
 end
