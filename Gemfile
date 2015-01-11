@@ -29,6 +29,7 @@ gem 'spring',        group: :development
 group :development, :test do
   gem 'pry-rails'
   gem 'pry'
+  gem 'annotate'
 end
 
 group :test do
